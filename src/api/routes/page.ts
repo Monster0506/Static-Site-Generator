@@ -1,7 +1,7 @@
 import type { ApiRoutes } from "../types";
 import {read } from "../../lib/load-file.ts"
 export const pageRoutes = {
-  "/page/:id": {
+  "/api/page/:id": {
     async GET(req) {
       return Response.json({
         message: await read(req.params.id),
@@ -10,4 +10,4 @@ export const pageRoutes = {
     },
   },
 
-} satisfies ApiRoutes<"/page/:id">;
+} satisfies ApiRoutes<"/api/page/:id">;

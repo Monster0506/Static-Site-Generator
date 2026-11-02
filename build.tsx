@@ -153,7 +153,7 @@ async function buildCss(distDir: string, configPath: string) {
 }
 
 
-async function buildIndex(items, distDir: string, slots: ResolvedSlots){
+async function buildListing(items, distDir: string, slots: ResolvedSlots, filename: string, title: string){
 
             let htmlContent=(<ul>
                 {items.map(({title, hash, date}, index) => (
@@ -169,10 +169,10 @@ async function buildIndex(items, distDir: string, slots: ResolvedSlots){
                 ))}
             </ul>
             )
-            const staticHtml = renderToStaticMarkup(<PageLayout title="Home" description="Home" slots={slots}>{htmlContent}</PageLayout>);
+            const staticHtml = renderToStaticMarkup(<PageLayout title={title} description={title} slots={slots}>{htmlContent}</PageLayout>);
 
 
-    write("index.html", staticHtml, distDir);
+    write(filename, staticHtml, distDir);
 }
 
 
@@ -208,11 +208,12 @@ async function build() {
 
             write(hash+".html", staticHtml, distDir);
             const sortTime = date ? date.getTime() : Bun.file(join(pagesDir, file)).lastModified;
-            names.push({title, hash, date, sortTime});
+            names.push({title, hash, date, sortTime, unlisted: frontmatter.unlisted === true});
         }
         names.sort((a, b) => b.sortTime - a.sortTime);
         console.log(names);
-        buildIndex(names, distDir, slots);
+        buildListing(names.filter(item => !item.unlisted), distDir, slots, "index.html", "Home");
+        buildListing(names, distDir, slots, "all.html", "All articles");
     }
     catch (error) {
         console.error(error);

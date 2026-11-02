@@ -2,7 +2,7 @@
 
 This repository is a static blog generator that runs on Bun. It is a reusable GitHub Action.
 
-The action reads a directory of markdown files. Each file can have a TOML frontmatter block. The action converts the files into a static site. It creates one HTML page for each post, plus an index page. The action then uploads the site as a GitHub Pages artifact.
+The action reads a directory of markdown files. Each file can have a TOML frontmatter block. The action converts the files into a static site. It creates one HTML page for each post, plus `index.html` and `all.html`. The action then uploads the site as a GitHub Pages artifact.
 
 Do not copy this repository as a template. Other repositories use it directly as an action.
 
@@ -89,9 +89,13 @@ date='2026-01-05'
 
 The action reads `title` and `date` from the frontmatter. The value of `date` must be a string, or a UNIX epoch time in seconds. TOML must be able to parse the value as a date, for example `'2026-01-05'`.
 
+The optional `unlisted` field controls whether a post appears on Home (`index.html`). Only the TOML boolean `unlisted=true` excludes a post from Home. Posts with `unlisted=false` or no `unlisted` field remain on Home. The action still builds every post page.
+
+All articles (`all.html`) lists every post, including unlisted posts and weekly roundups. Both lists use the same layout and date display. Unlisted posts remain accessible by their direct links and through `all.html`. This field does not make a post private.
+
 If a post has no `date` value, the action still builds the post. The post page does not show a published-date line.
 
-The index page shows posts in order by `date`, from newest to oldest. A post with no `date` value sorts by the last-modified time of its source file instead.
+Both `index.html` and `all.html` show posts in order by `date`, from newest to oldest. A post with no `date` value sorts by the last-modified time of its source file instead.
 
 The output file name is a hash of the source file name. It is not the same as the source file name.
 
